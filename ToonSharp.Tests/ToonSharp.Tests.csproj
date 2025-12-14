@@ -22,4 +22,10 @@
     <ProjectReference Include="..\ToonSharp\ToonSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SpecTests\Specs\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
