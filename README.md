@@ -7,7 +7,7 @@ A high-performance, .NET 9 library for serializing and deserializing data in the
 
 ## Features
 
-- **TOON v1.3 Specification Support** - Implements the TOON specification with 16 known deviations
+- **TOON v1.4 Specification Support** - Implements the TOON specification with 16 known deviations
 - **Performance-Driven** - Built with .NET 9 modern performance features
 - **Type-Safe** - Leverages C# 12 features and nullable reference types
 - **Strict Mode** - Optional strict validation for production environments
@@ -250,13 +250,13 @@ ToonSharp is built with performance in mind:
 
 ## Specification
 
-This library implements the [TOON Specification v1.3](https://github.com/toon-format/spec/blob/main/SPEC.md) (local copy: [SPEC.md](SPEC.md)).
+This library implements the [TOON Specification v1.4](https://github.com/toon-format/spec/blob/v1.4.0/SPEC.md) (local copy: [SPEC.md](SPEC.md)).
 
 The test fixtures in `ToonSharp.Tests/SpecTests/Specs/` are a direct copy from the official [toon-format/spec](https://github.com/toon-format/spec/tree/main/tests/fixtures) repository.
 
 ## Spec Deviations
 
-ToonSharp has 16 known deviations from the official TOON v1.3 specification tests. The following are documented:
+ToonSharp has 16 known deviations from the official TOON v1.4 specification tests. The following are documented:
 
 ### Encode: Hyphen Quoting
 

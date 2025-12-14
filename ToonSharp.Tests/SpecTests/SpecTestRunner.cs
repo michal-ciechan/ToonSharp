@@ -43,10 +43,10 @@ public class SpecTestRunner
 
             foreach (var test in fixture.Tests)
             {
-                // Skip tests that require a newer spec version than 1.3
+                // Skip tests that require a newer spec version than 1.4
                 if (!string.IsNullOrEmpty(test.MinSpecVersion) &&
                     Version.TryParse(test.MinSpecVersion, out var minVersion) &&
-                    minVersion > new Version(1, 3))
+                    minVersion > new Version(1, 4))
                 {
                     continue;
                 }
