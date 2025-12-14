@@ -7,7 +7,7 @@ A high-performance, .NET 9 library for serializing and deserializing data in the
 
 ## Features
 
-- **TOON v1.4 Specification Support** - Implements the TOON specification with 16 known deviations
+- **TOON v1.4 Specification Support** - Implements the TOON specification with 19 known deviations
 - **Performance-Driven** - Built with .NET 9 modern performance features
 - **Type-Safe** - Leverages C# 12 features and nullable reference types
 - **Strict Mode** - Optional strict validation for production environments
@@ -256,7 +256,7 @@ The test fixtures in `ToonSharp.Tests/SpecTests/Specs/` are a direct copy from t
 
 ## Spec Deviations
 
-ToonSharp has 16 known deviations from the official TOON v1.4 specification tests. The following are documented:
+ToonSharp has 19 known deviations from the official TOON v1.4 specification tests. The following are documented:
 
 ### Encode: Hyphen Quoting
 
@@ -283,6 +283,7 @@ Keys with brackets in quotes are misinterpreted as array notation.
 | Test | Input | Expected | Error |
 |------|-------|----------|-------|
 | parses field with quoted key containing brackets | `"key[test]"[3]: 1,2,3` | `{"key[test]": [1,2,3]}` | Invalid array length: test |
+| parses quoted key containing brackets with inline array | `"key[test]"[3]: 1,2,3` | `{"key[test]": [1,2,3]}` | Invalid array length: test |
 | parses field with quoted key starting with bracket | `"[index]": 5` | `{"[index]": 5}` | Crash |
 
 ### Decode: Quoted Field Names in Tabular
@@ -292,6 +293,7 @@ Tabular headers with quoted field names containing special characters fail to pa
 | Test | Input | Expected |
 |------|-------|----------|
 | parses tabular array with quoted field names | `items[2]{"order:id","full name"}:\n  1,Ada\n  2,Bob` | `{"items": [{...}, {...}]}` |
+| parses quoted header keys in tabular arrays | `items[2]{"order:id","full name"}:\n  1,Ada\n  2,Bob` | `{"items": [{...}, {...}]}` |
 
 ### Decode: Blank Line Handling
 
@@ -300,6 +302,7 @@ Blank lines after arrays are incorrectly treated as part of the array.
 | Test | Input | Expected |
 |------|-------|----------|
 | allows blank line after primitive array | `tags[2]: a,b\n\nother: value` | `{"tags": ["a","b"], "other": "value"}` |
+| accepts blank line after array ends | `items[1]:\n  - a\n\nb: 2` | `{"items": ["a"], "b": 2}` |
 
 ### Decode: Nested Arrays in List Items
 
