@@ -5,6 +5,7 @@ namespace ToonSharp.Tests;
 
 public class ToonSerializerTests
 {
+
     [Fact]
     public void Serialize_SimpleObject_ReturnsCorrectToon()
     {
@@ -17,7 +18,7 @@ public class ToonSerializerTests
         };
 
         // Act
-        var toon = ToonSerializer.Serialize(obj);
+        var toon = ToonSerializer.Serialize(obj).NormalizeLineEndings();
 
         // Assert
         var expected = "id: 123\nname: Ada\nactive: true";
@@ -38,7 +39,7 @@ public class ToonSerializerTests
         };
 
         // Act
-        var toon = ToonSerializer.Serialize(obj);
+        var toon = ToonSerializer.Serialize(obj).NormalizeLineEndings();
 
         // Assert
         var expected = "user:\n  id: 123\n  name: Ada";
@@ -76,7 +77,7 @@ public class ToonSerializerTests
         };
 
         // Act
-        var toon = ToonSerializer.Serialize(obj);
+        var toon = ToonSerializer.Serialize(obj).NormalizeLineEndings();
 
         // Assert
         var expected = "pairs[2]:\n  - [2]: 1,2\n  - [2]: 3,4";
@@ -97,7 +98,7 @@ public class ToonSerializerTests
         };
 
         // Act
-        var toon = ToonSerializer.Serialize(obj);
+        var toon = ToonSerializer.Serialize(obj).NormalizeLineEndings();
 
         // Assert
         var expected = "items[2]{sku,qty,price}:\n  A1,2,9.99\n  B2,1,14.5";
@@ -117,7 +118,7 @@ public class ToonSerializerTests
         var obj = new JsonObject { ["items"] = items };
 
         // Act
-        var toon = ToonSerializer.Serialize(obj);
+        var toon = ToonSerializer.Serialize(obj).NormalizeLineEndings();
 
         // Assert
         var expected = "items[3]:\n  - 1\n  - a: 1\n  - text";
@@ -418,4 +419,15 @@ public class ToonSerializerTests
         Assert.DoesNotContain("E+", toon);
         Assert.DoesNotContain("E-", toon);
     }
+}
+
+/// <summary>
+/// Extension methods for test utilities.
+/// </summary>
+public static class StringExtensions
+{
+    /// <summary>
+    /// Normalizes line endings to LF only (TOON spec requirement).
+    /// </summary>
+    public static string NormalizeLineEndings(this string input) => input.Replace("\r\n", "\n");
 }
