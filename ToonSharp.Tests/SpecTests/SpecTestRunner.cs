@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 using Xunit;
 
 namespace ToonSharp.Tests.SpecTests;
@@ -198,30 +197,30 @@ public class SpecTestRunner
 #region Models
 
 public record SpecFixture(
-    [property: JsonPropertyName("version")] string Version,
-    [property: JsonPropertyName("category")] string Category,
-    [property: JsonPropertyName("description")] string Description,
-    [property: JsonPropertyName("tests")] List<SpecTest> Tests
+    string Version,
+    string Category,
+    string Description,
+    List<SpecTest> Tests
 );
 
 public record SpecTest(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("input")] JsonNode? Input,
-    [property: JsonPropertyName("expected")] JsonNode? Expected,
-    [property: JsonPropertyName("shouldError")] bool ShouldError = false,
-    [property: JsonPropertyName("options")] SpecTestOptions? Options = null,
-    [property: JsonPropertyName("specSection")] string? SpecSection = null,
-    [property: JsonPropertyName("note")] string? Note = null,
-    [property: JsonPropertyName("minSpecVersion")] string? MinSpecVersion = null
+    string Name,
+    JsonNode? Input,
+    JsonNode? Expected,
+    bool ShouldError = false,
+    SpecTestOptions? Options = null,
+    string? SpecSection = null,
+    string? Note = null,
+    string? MinSpecVersion = null
 );
 
 public record SpecTestOptions(
-    [property: JsonPropertyName("delimiter")] string? Delimiter = null,
-    [property: JsonPropertyName("indent")] int? Indent = null,
-    [property: JsonPropertyName("strict")] bool? Strict = null,
-    [property: JsonPropertyName("keyFolding")] string? KeyFolding = null,
-    [property: JsonPropertyName("flattenDepth")] int? FlattenDepth = null,
-    [property: JsonPropertyName("expandPaths")] string? ExpandPaths = null
+    string? Delimiter = null,
+    int? Indent = null,
+    bool? Strict = null,
+    string? KeyFolding = null,
+    int? FlattenDepth = null,
+    string? ExpandPaths = null
 );
 
 #endregion
