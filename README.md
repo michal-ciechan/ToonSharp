@@ -252,6 +252,8 @@ ToonSharp is built with performance in mind:
 
 This library implements the [TOON Specification v1.3](https://github.com/toon-format/spec/blob/main/SPEC.md) (local copy: [SPEC.md](SPEC.md)).
 
+The test fixtures in `ToonSharp.Tests/SpecTests/Specs/` are a direct copy from the official [toon-format/spec](https://github.com/toon-format/spec/tree/main/tests/fixtures) repository.
+
 ## Spec Deviations
 
 ToonSharp has 16 known deviations from the official TOON v1.3 specification tests. The following are documented:
