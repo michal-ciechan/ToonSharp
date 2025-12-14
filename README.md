@@ -7,7 +7,7 @@ A high-performance, .NET 9 library for serializing and deserializing data in the
 
 ## Features
 
-- **Full TOON v1.2 Specification Support** - Complete implementation of the TOON specification
+- **TOON v1.3 Specification Support** - Implements the TOON specification with 16 known deviations
 - **Performance-Driven** - Built with .NET 9 modern performance features
 - **Type-Safe** - Leverages C# 12 features and nullable reference types
 - **Strict Mode** - Optional strict validation for production environments
@@ -250,7 +250,107 @@ ToonSharp is built with performance in mind:
 
 ## Specification
 
-This library implements the [TOON Specification v1.2](SPEC.md).
+This library implements the [TOON Specification v1.3](https://github.com/toon-format/spec/blob/main/SPEC.md) (local copy: [SPEC.md](SPEC.md)).
+
+## Spec Deviations
+
+ToonSharp has 16 known deviations from the official TOON v1.3 specification tests. The following are documented:
+
+### Encode: Hyphen Quoting
+
+Single hyphens and strings starting with "- " are not quoted when they should be to avoid list item ambiguity.
+
+| Test | Input | Expected | Actual |
+|------|-------|----------|--------|
+| quotes single hyphen as object value | `{ "marker": "-" }` | `marker: "-"` | `marker: -` |
+| quotes single hyphen in array | `{ "items": ["-"] }` | `items[1]: "-"` | `items[1]: -` |
+| quotes leading-hyphen string in array | `{ "tags": ["a", "- item", "b"] }` | `tags[3]: a,"- item",b` | `tags[3]: a,- item,b` |
+
+### Encode: Null in Tabular Format
+
+Arrays containing null values fall back to list format instead of using tabular format with explicit null.
+
+| Test | Input | Expected | Actual |
+|------|-------|----------|--------|
+| serializes tabular array with null values | `[{id:1,val:10},{id:2,val:null}]` | `items[2]{id,val}:\n  1,10\n  2,null` | List format |
+
+### Decode: Quoted Keys with Brackets
+
+Keys with brackets in quotes are misinterpreted as array notation.
+
+| Test | Input | Expected | Error |
+|------|-------|----------|-------|
+| parses field with quoted key containing brackets | `"key[test]"[3]: 1,2,3` | `{"key[test]": [1,2,3]}` | Invalid array length: test |
+| parses field with quoted key starting with bracket | `"[index]": 5` | `{"[index]": 5}` | Crash |
+
+### Decode: Quoted Field Names in Tabular
+
+Tabular headers with quoted field names containing special characters fail to parse.
+
+| Test | Input | Expected |
+|------|-------|----------|
+| parses tabular array with quoted field names | `items[2]{"order:id","full name"}:\n  1,Ada\n  2,Bob` | `{"items": [{...}, {...}]}` |
+
+### Decode: Blank Line Handling
+
+Blank lines after arrays are incorrectly treated as part of the array.
+
+| Test | Input | Expected |
+|------|-------|----------|
+| allows blank line after primitive array | `tags[2]: a,b\n\nother: value` | `{"tags": ["a","b"], "other": "value"}` |
+
+### Decode: Nested Arrays in List Items
+
+Inline array syntax within list items creates a string key instead of nested array.
+
+| Test | Input | Expected | Actual |
+|------|-------|----------|--------|
+| parses list-form array with inline arrays | `items:\n- tags[3]: a,b,c` | `{"items": [{"tags": ["a","b","c"]}]}` | Key becomes `"tags[3]"` |
+
+### Decode: Delimiter Inheritance in List Items
+
+Nested arrays and object values in list items don't properly inherit or follow delimiter rules.
+
+| Test | Input | Expected |
+|------|-------|----------|
+| parses nested arrays inside list items with default comma delimiter | `items[1\t]:\n  - tags[3]: a,b,c` | Nested array uses comma |
+| object values in list items follow document delimiter | `items[2\t]:\n  - status: a,b` | Value is `"a,b"` not parsed as array |
+| object values with comma must be quoted | `items[2]:\n  - status: "a,b"` | Value is `"a,b"` |
+
+### Decode: Negative Leading-Zero Numbers
+
+Negative numbers with leading zeros are parsed as numbers instead of strings.
+
+| Test | Input | Expected | Actual |
+|------|-------|----------|--------|
+| negative with leading zeros stays string | `-05` | `"-05"` (string) | `-5` (number) |
+| treats negative leading-zeros in array as strings | `nums[2]: -05,-007` | `["-05", "-007"]` | `[-5, -7]` |
+
+### Decode: Root Primitives
+
+Root-level quoted strings with backslashes and empty documents have issues.
+
+| Test | Input | Expected | Actual |
+|------|-------|----------|--------|
+| parses quoted string with backslash as root value | `"C:\\Users\\path"` | `"C:\\Users\\path"` | Error: Missing colon after key |
+| parses empty document as empty object | `` (empty) | `{}` | Error: Empty input |
+
+### Decode: Unterminated String Detection
+
+Unterminated strings don't throw an error in all contexts.
+
+| Test | Input | Expected |
+|------|-------|----------|
+| throws on unterminated string | `"unterminated` | Should throw error |
+
+### Encode: Floating-Point Precision
+
+Large integers and repeating decimals lose precision during serialization.
+
+| Test | Input | Expected | Actual |
+|------|-------|----------|--------|
+| encodes MAX_SAFE_INTEGER | `9007199254740991` | `9007199254740991` | `9007199254740990` |
+| encodes repeating decimal with full precision | `0.3333333333333333` | `0.3333333333333333` | `0.333333333333333` |
 
 ## Contributing
 
