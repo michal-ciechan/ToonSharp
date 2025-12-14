@@ -5,6 +5,7 @@
 **Status:** Working Draft
 **Author:** Johann Schopplich ([@johannschopplich](https://github.com/johannschopplich))
 **License:** MIT
+**Original:** https://github.com/johannschopplich/toon/blob/main/SPEC.md
 
 ---
 
